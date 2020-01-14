@@ -107,11 +107,21 @@ router.put('/:id', (req, res) => {
 router.post('/', (req, res) => {
     const newPost = req.body;
     if (!newPost.title || !newPost.contents) {
-        
+        res.status(400).json({ errorMessage: "Please provide title and contents for the post." })
+    } else {
+        Posts.insert(newPost)
+            .then(newP => {
+                res.status(201).json({newP})
+            })
+            .catch(err => {
+                console.log('error creating post', err)
+                res.status(500).json({ error: "There was an error while saving the post to the database" })
+            })
     }
 })
 
 //POST creates a new comment using req.body (insertComment())
+
 
 //DELETE deletes a post by id (remove())
 
