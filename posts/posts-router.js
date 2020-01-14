@@ -17,8 +17,7 @@ router.get('/', (req, res) => {
 
 //GET posts by id (findById())
 router.get('/:id', (req, res) => {
-    const id = req.params.id;
-    
+    const id = req.params.id;    
     Posts.findById(id)
         .then(post => {
             if (post.length === 0) {
