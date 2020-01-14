@@ -104,12 +104,12 @@ router.put('/:id', (req, res) => {
 })
 
 //POST creates a new post using req.body (insert())
-// router.post('/', (req, res) => {
-//     const newPost = req.body;
-//     if (!newPost.title || !newPost.contents) {
-
-//     }
-// })
+router.post('/', (req, res) => {
+    const newPost = req.body;
+    if (!newPost.title || !newPost.contents) {
+        
+    }
+})
 
 //POST creates a new comment using req.body (insertComment())
 
