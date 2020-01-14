@@ -1,6 +1,7 @@
 const router = require('express').Router();
 
 const Posts = require('../data/db.js');
+
 //this is for all calls using "/api/posts"
 
 //GET all posts (find())
@@ -33,6 +34,21 @@ router.get('/:id', (req, res) => {
 })
 
 //GET all comments of post by post id (findPostComments())
+router.get('/:id/comments', (req, res) => {
+    const id = req.params.id;
+    Posts.findPostComments(id)
+        .then(com => {
+            if (com.length === 0) {
+                res.status(404).json({ message: "The post with the specified ID does not exist." })
+            } else {
+                res.status(200).json({com})
+            }
+        })
+        .catch(err => {
+            console.log('error getting comment', err)
+            res.status(500).json({ errorMessage: "The comments information could not be retrieved." })
+        })
+})
 
 //GET coments by comment id (findCommentById())
 
