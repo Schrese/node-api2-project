@@ -39,7 +39,7 @@ router.get('/:id/comments', (req, res) => {
     Posts.findPostComments(id)
         .then(com => {
             if (com.length === 0) {
-                res.status(404).json({ message: "The post with the specified ID does not exist." })
+                res.status(404).json({ message: "The comment with the specified ID does not exist." })
             } else {
                 res.status(200).json({com})
             }
@@ -51,10 +51,65 @@ router.get('/:id/comments', (req, res) => {
 })
 
 //GET coments by comment id (findCommentById())
-
+router.get('/:id/comments/:id', (req, res) => {
+    const comid = req.params.post_id;
+    const id = req.params.id;
+    Posts.findPostComments(id)
+        .then(coms => {
+            if (coms.length === 0) {
+                res.status(404).json({ message: "The comment with the specified ID does not exist." })
+            } else {
+                Posts.findCommentById(id)
+                    .then(com => {
+                        res.status(200).json({com})
+                    })
+                    .catch(err => {
+                        console.log('error getting specified comment', err)
+                        res.status(500).json({ errorMessage: "The comments information could not be retrieved by id." })
+                    })
+            }
+        })
+        .catch(err => {
+            console.log('error getting comment', err)
+            res.status(500).json({ errorMessage: "The comments information could not be retrieved." })
+        })
+      
+        
+})
 //PUT updates post by post id (update())
+router.put('/:id', (req, res) => {
+    const id = req.params.id;
+    const updatePost = req.body;
+    if(!updatePost.title || !updatePost.contents) {
+        res.status(400).json( { errorMessage: "Please provide title and contents for the post." })
+    } else {
+        Posts.update(id, updatePost)
+            .then(post => {
+                if (post) {
+                    Posts.findById(id)
+                        .then(post => {
+                            res.status(200).json(post)
+                        })
+                        .catch(err => {
+                            console.log('error getting this post by its id', err)
+                            res.status(404).json({ message: "The post with the specified ID does not exist." })
+                        })
+                }
+            })
+            .catch(err => {
+                console.log('error updating post', err)
+                res.status(500).json({ errorMessage: "The post information could not be modified." })
+            })
+    }
+})
 
 //POST creates a new post using req.body (insert())
+// router.post('/', (req, res) => {
+//     const newPost = req.body;
+//     if (!newPost.title || !newPost.contents) {
+
+//     }
+// })
 
 //POST creates a new comment using req.body (insertComment())
 
