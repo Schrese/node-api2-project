@@ -54,12 +54,7 @@ router.get('/:id/comments', (req, res) => {
 router.get('/:id/comments/:id', (req, res) => {
     const comid = req.params.post_id;
     const id = req.params.id;
-    Posts.findPostComments(id)
-        .then(coms => {
-            if (coms.length === 0) {
-                res.status(404).json({ message: "The comment with the specified ID does not exist." })
-            } else {
-                Posts.findCommentById(id)
+    Posts.findCommentById(id)
                     .then(com => {
                         res.status(200).json({com})
                     })
@@ -67,12 +62,25 @@ router.get('/:id/comments/:id', (req, res) => {
                         console.log('error getting specified comment', err)
                         res.status(500).json({ errorMessage: "The comments information could not be retrieved by id." })
                     })
-            }
-        })
-        .catch(err => {
-            console.log('error getting comment', err)
-            res.status(500).json({ errorMessage: "The comments information could not be retrieved." })
-        })
+    // Posts.findPostComments(postId)
+    //     .then(coms => {
+    //         if (coms.length === 0) {
+    //             res.status(404).json({ message: "The comment with the specified ID does not exist." })
+    //         } else {
+    //             Posts.findCommentById(id)
+    //                 .then(com => {
+    //                     res.status(200).json({com})
+    //                 })
+    //                 .catch(err => {
+    //                     console.log('error getting specified comment', err)
+    //                     res.status(500).json({ errorMessage: "The comments information could not be retrieved by id." })
+    //                 })
+    //         }
+    //     })
+    //     .catch(err => {
+    //         console.log('error getting comment', err)
+    //         res.status(500).json({ errorMessage: "The comments information could not be retrieved." })
+    //     })
       
         
 })
