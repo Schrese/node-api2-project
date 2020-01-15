@@ -121,8 +121,60 @@ router.post('/', (req, res) => {
 })
 
 //POST creates a new comment using req.body (insertComment())
+router.post('/:id/comments', (req, res) => {
+    const id = req.params.id;
+    const newCom = req.body;
 
+    // if (!newCom.text) {
+    //     res.status(400).json({ errorMessage: "Please provide text for the comment." })
+    // } else {
+        Posts.findById(id)
+            .then(post => {
+                console.log('got to here')
+                if (post.length === 0) {
+                    res.status(404).json({ message: "The post with the specified ID does not exist." })
+                } else if (!newCom.text) {
+                    res.status(400).json({ errorMessage: "Please provide text for the comment." })
+                } else {
+                    Posts.insertComment(newCom)
+                        .then(newC => {
+                            res.status(201).json({newCom})
+                        })
+                        .catch(err => {
+                            console.log('error creating new comment', err)
+                            res.status(500).json({ errorMessage: "There was an error while saving the comment to the database" })
+                        })
+                }
+        })
+        .catch(err => {
+            console.log('error getting this post', err)
+            res.status(500).json({ errorMessage: "The post information could not be retrieved." })
+        })
+})
 
 //DELETE deletes a post by id (remove())
+router.delete('/:id', (req, res) => {
+    const id = req.params.id;
+
+    Posts.findById(id)
+        .then(post => {
+            if (post.length === 0) {
+                res.status(404).json({ message: "The post with the specified ID does not exist." })
+            } else {
+                Posts.remove(id)
+                    .then(deleted => {
+                        res.status(200).json({message: "Post has been successfully deleted!"})
+                    })
+                    .catch(err => {
+                        console.log('error in delete', err)
+                        res.status(500).json({ errorMessage: "The post could not be removed" })
+                    })
+            }
+        })
+        .catch(err => {
+            console.log('error getting this post', err)
+            res.status(500).json({ errorMessage: "The post information could not be retrieved." })
+        })
+})
 
 module.exports = router;
